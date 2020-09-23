@@ -313,7 +313,7 @@ mul_frame_avg_on = False
 # Show the repeatability of the algorithm
 def TimeErrorVisualize_lineplot(src, image_num):
     imgs = os.listdir(src)
-    imgs.sort()
+    imgs.sort(key=lambda x: int(x[:-4]))
     samp_line = 10
     imglist = []
     centers = []
@@ -415,10 +415,11 @@ def resolution_test(test_seq, image_num):
 
 # Uniform Sampling
 
-sample_seq = 10
+sample_seq = 1
 sample_max = 100
-src_dir = "Output/straight_nofan"
+src_dir = "Output/fix_cable"
 image_list = os.listdir(src_dir)
+# image_list.sort(key=lambda x: int(x[:-4]))
 image_sum = len(image_list)
 image_num_input = []
 for x in range(image_sum):
@@ -479,7 +480,7 @@ for img in imgs:
 
 # Read Video
 '''
-seq = "straight_nofan"
+seq = "fix_cable_nofan_500"
 start_line = 800
 end_line = 1500
 imglist = ReadVideo("Videos/" + seq + ".avi", start_line, end_line)
@@ -495,6 +496,21 @@ centers = WeightCal(img)
 #centers = GaussCal(img)
 ShowCenter_1D(centers)
 #img = DrawCenter(img, centers )
+'''
+
+# Solve Pic-Stream
+'''
+src = "fix_cable_pic"
+src_d = "Output/" + src
+start_line = 800
+end_line = 1500
+imglist = ReadImgs(src_d)
+# imglist = imglist.sort(key=lambda x: int(x[:-4]))
+counter = 0
+for img in imglist:
+    counter += 1
+    img = img[start_line:end_line, :]
+    SaveImg(img, src + "_roi", str(counter))
 '''
 
 
