@@ -12,6 +12,7 @@ import cross_center
 # return: the image
 def ReadImg(src, num):
     imgs = os.listdir(src)
+    imgs.sort(key=lambda x: int(x[:-4]))
     img = cv2.imread(src + '/' + imgs[num])
     img = RgbToGrey(img)
     return img
@@ -21,7 +22,7 @@ def ReadImg(src, num):
 # return: the images
 def ReadImgs(src):
     imgs = os.listdir(src)
-    imgs.sort()
+    imgs.sort(key=lambda x: int(x[:-4]))
     imglist = []
     for img in imgs:
         img = cv2.imread(src + '/' + img)
@@ -145,12 +146,12 @@ def WeightCal(img):
     # Gauss Blur
     
     #img = SelfAdapterdRanger(img)
-    #img = cv2.GaussianBlur(img, (9, 9), 0)
-    '''
-    cv2.namedWindow("Gaussian Blur", 0)
-    cv2.imshow("Gaussian Blur", img)
-    cv2.waitKey(0)
-    '''
+    img = cv2.GaussianBlur(img, (9, 9), 0)
+    
+    # cv2.namedWindow("Gaussian Blur", 0)
+    # cv2.imshow("Gaussian Blur", img)
+    # cv2.waitKey(0)
+    
     width, height = img.shape[1], img.shape[0]
     eva_center = []
     max_pixel = []
@@ -209,6 +210,19 @@ def SelfAdapterdRanger(img):
 
 # Show the Trend of the centers
 def ShowCenter_1D(centers):
+    # multi-line average
+    n = len(centers)
+    counter = 0
+    centers_avg = []
+    sum_center = 0
+    for center in centers:
+        sum_center += center
+        counter += 1
+        if counter > 9:
+            centers_avg.append(sum_center/counter)
+            counter = 0
+            sum_center = 0
+    centers = centers_avg
     plt.plot(centers)
     plt.show()
 
@@ -414,10 +428,10 @@ def resolution_test(test_seq, image_num):
 # TimeErrorVisualize("Output/ReflectDark", [0,1,2,3,4,5,6,7,8,9,10,11])
 
 # Uniform Sampling
-
+'''
 sample_seq = 1
 sample_max = 100
-src_dir = "Output/fix_cable"
+src_dir = "Output/t=2000_g=0"
 image_list = os.listdir(src_dir)
 # image_list.sort(key=lambda x: int(x[:-4]))
 image_sum = len(image_list)
@@ -428,7 +442,7 @@ for x in range(image_sum):
     if x % sample_seq == 0:
         image_num_input.append(x)
 TimeErrorVisualize_lineplot(src_dir, image_num_input)
-
+'''
 '''
 # Find Proper Range
 img = ReadImg("Images", 18)
@@ -480,7 +494,7 @@ for img in imgs:
 
 # Read Video
 '''
-seq = "fix_cable_nofan_500"
+seq = "t=2000_g=0"
 start_line = 800
 end_line = 1500
 imglist = ReadVideo("Videos/" + seq + ".avi", start_line, end_line)
@@ -489,14 +503,15 @@ for img in imglist:
     SaveImg(img, seq, str(counter))
     counter += 1 
 '''
-'''
+
 # Noise Visualize
-img = ReadImg("Output/ReflectDark", 0)
+img = ReadImg("Output/2750", 0)
+# img = ReadImg("Output/t=2000_g=0", 0)
 centers = WeightCal(img)
 #centers = GaussCal(img)
 ShowCenter_1D(centers)
 #img = DrawCenter(img, centers )
-'''
+
 
 # Solve Pic-Stream
 '''
